@@ -76,6 +76,9 @@
         return intervalId
     }
     let id = initNowPlaying()
-    document.addEventListener('astro:before-swap', () => clearInterval(id))
+    document.addEventListener('astro:before-swap', () => {
+        console.log('hehehe, ', id)
+        clearInterval(id)
+    })
     document.addEventListener('astro:page-load', () => (id = initNowPlaying()))
 </script>

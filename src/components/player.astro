@@ -22,27 +22,39 @@
     const HEIGHT = 50
     canvas.height = HEIGHT
 
-    const audioCtx = new window.AudioContext()
-    const analyser = audioCtx.createAnalyser()
-    const bufferLength = analyser.frequencyBinCount
-    let dataArray = new Uint8Array(bufferLength)
+    let audioCtx: AudioContext | null = null
+    let analyser: AnalyserNode | null = null
+    let dataArray: Uint8Array<ArrayBuffer> | null = null
     let started = false
 
-    const sourceNode = audioCtx.createMediaElementSource(audio)
-    sourceNode.connect(analyser)
-    analyser.connect(audioCtx.destination)
+    function initAudio() {
+        if (started) return
 
-    canvas.width = bufferLength
+        // Must be constructed inside a user gesture on iOS
+        const AudioContextClass =
+            window.AudioContext || (window as any).webkitAudioContext
+        audioCtx = new AudioContextClass()
+        analyser = audioCtx.createAnalyser()
+        const bufferLength = analyser.frequencyBinCount
+        dataArray = new Uint8Array(bufferLength)
+
+        const sourceNode = audioCtx.createMediaElementSource(audio)
+        sourceNode.connect(analyser)
+        analyser.connect(audioCtx.destination)
+
+        canvas.width = bufferLength
+        draw()
+        started = true
+    }
 
     function draw() {
-        if (!analyser || !ctx) return
+        if (!analyser || !ctx || !dataArray) return
 
         requestAnimationFrame(draw)
         analyser.getByteFrequencyData(dataArray)
-
         ctx.clearRect(0, 0, canvas.width, HEIGHT)
 
-        for (let i = 0; i < bufferLength; i++) {
+        for (let i = 0; i < dataArray.length; i++) {
             const v = dataArray[i] / 255
             const h = Math.floor(v * HEIGHT)
             ctx.fillStyle = '#f2f2f2'
@@ -50,25 +62,51 @@
         }
     }
 
-    function togglePlay() {
-        if (!started) {
-            audio.muted = true // critical Safari hack
-            audio.load()
+    // function togglePlay() {
+    //     if (!started) {
+    //         audio.muted = true // critical Safari hack
+    //         audio.load()
 
-            draw()
-            started = true
+    //         draw()
+    //         started = true
+    //     }
+
+    //     if (audio.paused) {
+    //         audioCtx.resume().then(() => {
+    //             audio.play().then(() => {
+    //                 // unmute AFTER playback starts
+    //                 setTimeout(() => {
+    //                     audio.muted = false
+    //                 }, 100)
+    //             })
+    //             playBtn.textContent = '❚❚ LIVE'
+    //         })
+    //     } else {
+    //         audio.pause()
+    //         playBtn.textContent = '▶ LIVE'
+    //     }
+    // }
+
+    async function togglePlay() {
+        initAudio()
+
+        if (!audioCtx) return
+
+        if (audioCtx.state !== 'running') {
+            await audioCtx.resume()
         }
 
         if (audio.paused) {
-            audioCtx.resume().then(() => {
-                audio.play().then(() => {
-                    // unmute AFTER playback starts
-                    setTimeout(() => {
-                        audio.muted = false
-                    }, 100)
-                })
+            audio.muted = true
+            try {
+                await audio.play()
+                setTimeout(() => {
+                    audio.muted = false
+                }, 100)
                 playBtn.textContent = '❚❚ LIVE'
-            })
+            } catch (e) {
+                console.error('Playback failed:', e)
+            }
         } else {
             audio.pause()
             playBtn.textContent = '▶ LIVE'
