@@ -1,0 +1,80 @@
+---
+
+---
+
+<canvas id="spectrum" transition:persist></canvas>
+<button id="playBtn" transition:persist>▶ LIVE</button>
+
+<!-- Hidden audio element -->
+<audio
+    id="audio"
+    src="https://stream.jettyradio.com/listen/jettyradio/radio.mp3"
+    crossorigin="anonymous"
+    playsinline
+    transition:persist></audio>
+
+<script>
+    const audio = document.getElementById('audio') as HTMLAudioElement
+    const canvas = document.getElementById('spectrum') as HTMLCanvasElement
+    const ctx = canvas.getContext('2d')
+    const playBtn = document.getElementById('playBtn') as HTMLElement
+
+    const HEIGHT = 50
+    canvas.height = HEIGHT
+
+    const audioCtx = new window.AudioContext()
+    const analyser = audioCtx.createAnalyser()
+    const bufferLength = analyser.frequencyBinCount
+    let dataArray = new Uint8Array(bufferLength)
+    let started = false
+
+    const sourceNode = audioCtx.createMediaElementSource(audio)
+    sourceNode.connect(analyser)
+    analyser.connect(audioCtx.destination)
+
+    canvas.width = bufferLength
+
+    function draw() {
+        if (!analyser || !ctx) return
+
+        requestAnimationFrame(draw)
+        analyser.getByteFrequencyData(dataArray)
+
+        ctx.clearRect(0, 0, canvas.width, HEIGHT)
+
+        for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 255
+            const h = Math.floor(v * HEIGHT)
+            ctx.fillStyle = '#f2f2f2'
+            ctx.fillRect(i, HEIGHT - h, 1, h)
+        }
+    }
+
+    function togglePlay() {
+        if (!started) {
+            audio.muted = true // critical Safari hack
+            audio.load()
+
+            draw()
+            started = true
+        }
+
+        if (audio.paused) {
+            audioCtx.resume().then(() => {
+                audio.play().then(() => {
+                    // unmute AFTER playback starts
+                    setTimeout(() => {
+                        audio.muted = false
+                    }, 100)
+                })
+                playBtn.textContent = '❚❚ LIVE'
+            })
+        } else {
+            audio.pause()
+            playBtn.textContent = '▶ LIVE'
+        }
+    }
+
+    playBtn.addEventListener('click', togglePlay)
+    canvas.addEventListener('click', togglePlay)
+</script>
