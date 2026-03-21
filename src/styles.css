@@ -7,7 +7,7 @@ body {
     align-items: center;
 
     background-color: #0e0e0e;
-    background-image: url("../assets/bg.png");
+    background-image: url("/astro-radio/bg.png");
     background-repeat: repeat;
 
     color: #f2f2f2;
@@ -25,19 +25,6 @@ body {
     gap: 10px;
     align-items: center;
     text-align: center;
-}
-
-.logo img {
-    width: 70%;
-    max-width: 312px;
-    height: auto;
-    display: block;
-    margin: 0;
-}
-
-.logo {
-    display: flex;
-    justify-content: center;
 }
 
 p {
@@ -75,6 +62,30 @@ a {
     border-width: 0;
 }
 
+
+
+/* spectrum + player */
+#spectrum {
+    width: 300px;
+    height: 50px;
+    image-rendering: pixelated;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+#playBtn {
+    background: none;
+    border: 1px solid #444;
+    color: #f2f2f2;
+    padding: 6px 14px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#playBtn:hover {
+    opacity: 0.85;
+}
+
 #nowPlayingWidget {
     width: 100%;
     display: flex;
@@ -85,7 +96,6 @@ a {
     /* center vertically */
     font-size: 0.95em;
 }
-
 
 #art {
     width: 120px;
@@ -121,26 +131,4 @@ a {
 #listeners {
     font-size: 0.75em;
     opacity: 0.7;
-}
-
-/* spectrum + player */
-#spectrum {
-    width: 300px;
-    height: 50px;
-    image-rendering: pixelated;
-    cursor: pointer;
-    margin-bottom: 8px;
-}
-
-#playBtn {
-    background: none;
-    border: 1px solid #444;
-    color: #f2f2f2;
-    padding: 6px 14px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#playBtn:hover {
-    opacity: 0.85;
 }

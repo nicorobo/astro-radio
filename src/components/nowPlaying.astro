@@ -23,6 +23,8 @@
         const djNameEl = document.getElementById('djName') as HTMLElement
 
         async function updateNowPlaying() {
+            if (!artEl || !trackEl || !listenersEl || !liveBadgeEl || !djNameEl)
+                return 0
             try {
                 const res = await fetch(NOW_PLAYING_URL, { cache: 'no-store' })
                 const data = await res.json()
@@ -77,7 +79,6 @@
     }
     let id = initNowPlaying()
     document.addEventListener('astro:before-swap', () => {
-        console.log('hehehe, ', id)
         clearInterval(id)
     })
     document.addEventListener('astro:page-load', () => (id = initNowPlaying()))

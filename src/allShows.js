@@ -534,7 +534,7 @@ Exotic Gardens - Turn It On [Emotional Response 2025]`,
     downloadLink: "https://stream.jettyradio.com/api/station/1/ondemand/download/b51477aa3b03a6d33e8b035a",
   },
   {
-    dj: "",
+    dj: "MIMIXOMI",
     title: "MXO Radio",
     date: new Date(2026, 0, 6),
     setlist: `Remiseria Temperley: NEGRO 5 ESTRELLAS
@@ -568,7 +568,7 @@ Drake : over my dead body (no drake verse)`,
     downloadLink: "https://stream.jettyradio.com/api/station/1/ondemand/download/427a6c605a3c2847e55f8e9e",
   },
   {
-    dj: "",
+    dj: "Goose",
     title: "Afternoon Cruise",
     date: new Date(2026, 0, 2),
     setlist: `Nujabes,Cise Starr - Lady Brown (feat. Cise Starr from CYNE)
@@ -589,7 +589,7 @@ Flying Lotus,Kendrick Lamar - Never Catch Me`,
     downloadLink: "https://stream.jettyradio.com/api/station/1/ondemand/download/10e132d18ccd2cc7279ca29c",
   },
   {
-    dj: "",
+    dj: "DJ Tschona",
     title: "Bench Dubs (Recorded live Dec. 16, 2025)",
     date: new Date(2025, 11, 18),
     setlist: `Downtown (Basicnoise remix) - Mike Schommer
