@@ -29,8 +29,6 @@
 
     function initAudio() {
         if (started) return
-
-        // Must be constructed inside a user gesture on iOS
         const AudioContextClass =
             window.AudioContext || (window as any).webkitAudioContext
         audioCtx = new AudioContextClass()
@@ -62,31 +60,6 @@
         }
     }
 
-    // function togglePlay() {
-    //     if (!started) {
-    //         audio.muted = true // critical Safari hack
-    //         audio.load()
-
-    //         draw()
-    //         started = true
-    //     }
-
-    //     if (audio.paused) {
-    //         audioCtx.resume().then(() => {
-    //             audio.play().then(() => {
-    //                 // unmute AFTER playback starts
-    //                 setTimeout(() => {
-    //                     audio.muted = false
-    //                 }, 100)
-    //             })
-    //             playBtn.textContent = '❚❚ LIVE'
-    //         })
-    //     } else {
-    //         audio.pause()
-    //         playBtn.textContent = '▶ LIVE'
-    //     }
-    // }
-
     async function togglePlay() {
         initAudio()
 
@@ -95,7 +68,6 @@
         if (audioCtx.state !== 'running') {
             await audioCtx.resume()
         }
-
         if (audio.paused) {
             audio.muted = true
             try {
